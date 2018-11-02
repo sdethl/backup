@@ -1,0 +1,1662 @@
+package leetcode;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Anagram {
+
+    /**
+     * #242. Valid Anagram
+     *
+     * Given two strings s and t , write a function to determine if t is an anagram of s.
+     * Example 1:
+     Input: s = "anagram", t = "nagaram"
+     Output: true
+
+     /**
+     * quick sort, time complexity O(NlogN)
+     * Arrays.equals does the following.
+     * time complexity is O(N), linear search
+     *
+     * for (int i=0; i<length; i++)
+     *  if (a[i] != a2[i])
+     *  return false;
+     */
+
+    public boolean isAnagram(String s, String t){
+        if (s.length() != t.length()) {
+            return false;
+        }
+        char[] str1 = s.toCharArray();
+        char[] str2 = t.toCharArray();
+        Arrays.sort(str1);
+        Arrays.sort(str2);
+        return Arrays.equals(str1, str2);
+        }
+}
+
+package leetcode;
+
+public class BestTimeToBuyAndSell {
+
+    /**
+     *  #121. Best Time to Buy and Sell Stock
+     *
+     *  Say you have an array for which the ith element is the price of a given stock on day i.
+     If you were only permitted to complete at most one transaction (i.e., buy one and sell one share of the stock),
+     design an algorithm to find the maximum profit.
+     Note that you cannot sell a stock before you buy one.
+     *
+     * algorithm: greedy algorithm
+     *
+     *  1. take care of the edge cases
+     *  2. initialize
+     *      max_profit = 0
+     *      min_stock_price = a[0]
+     *
+     *  3. loop each element:
+     *      a. compare a[i] and min_stock_price,
+     *          find the min
+     *      b. a[i] - min,
+     *          find the profit
+     *      c. compare max_profit and profit
+     *          find the max
+     *  4. return the max profit
+     */
+
+    //brute force O(n^2)
+    public static int returnProfit(int[] nums){
+        int profit =0;
+        int length = nums.length;
+        for(int i= length-1; i>0; i--){
+            for(int j= length-2; j>=0; j--){
+                int tmp = nums[i] - nums[j];
+                if ( tmp > profit )
+                    profit = tmp;
+            }
+        }
+        return profit;
+    }
+
+    //O(n)
+    public static int greedyFindProfit(int[] nums){
+        int maxProfit = 0;
+        int minStockPrice = nums[0];
+        for(int n : nums){
+            int min = Math.min( n, minStockPrice);
+            int profit = n - min;
+            maxProfit = Math.max(profit, maxProfit);
+        }
+        return maxProfit;
+    }
+
+
+    public static void main(String[] args){
+        int[] stock = {0, 1, 5, 3, 6, 4};
+        System.out.println(greedyFindProfit(stock));
+    }
+}
+
+package leetcode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ContainDup {
+    /**
+     * # 217. Contains Duplicate
+     * Given an array of integers, find if the array contains any duplicates.
+     Your function should return true if any value appears at least twice in the array,
+     and it should return false if every element is distinct.
+     */
+
+    /**
+     * Summary of the issue type:
+     * Find duplicates in a one-dimensional array of integers in O(N)
+     * running time where the integer values are smaller than the length of the array
+     *
+     * 1. brute-force: comparing items with all the rest, O(N^2)
+     * 2. Hashmap: pros - not a in-place algorithm
+     * 3. absolute value: O(N) and in-place
+     *
+     */
+
+    public boolean hasDup(int[] nums){
+        Map<Integer, Integer> map = new HashMap<>();
+        for( int n:nums ){
+            if(map.containsKey(n)){
+                return true;
+            }else map.put(n, 1);
+        }
+        return false;
+    }
+
+    /**
+     * algorithm:
+     * 1. loop each element
+     * 2. check sign of nums[abs(nums[i])]
+     * 3. if positive, flip
+     * 4. if negative, found the dup
+     *
+     */
+    public boolean hasDupInPlace(int[] nums){
+        for(int i=0; i<nums.length; i++){
+            if( nums[Math.abs(nums[i])] > 0){
+                nums[Math.abs(nums[i])] = -nums[Math.abs(nums[i])];
+            }
+            else{
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+package leetcode;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class ExcelSheetNum {
+
+    /**
+     * # 171. Excel Sheet Column Number
+     *
+     * 26进制
+     * This is a wrong method, since column name could be more than 2 letters
+     */
+    public static int returnNum(String s){
+        int result;
+        char[] c = s.toCharArray();
+        int length = c.length;
+        Map<Character, Integer> map = new LinkedHashMap<>();
+        map.put('A', 1);
+        map.put('B', 2);
+        map.put('C', 3);
+        map.put('D', 4);
+        map.put('E', 5);
+        map.put('F', 6);
+        map.put('G', 7);
+        map.put('H', 8);
+        map.put('I', 9);
+        map.put('J', 10);
+        map.put('K', 11);
+        map.put('L', 12);
+        map.put('M', 13);
+        map.put('N', 14);
+        map.put('O', 15);
+        map.put('P', 16);
+        map.put('Q', 17);
+        map.put('R', 18);
+        map.put('S', 19);
+        map.put('T', 20);
+        map.put('U', 21);
+        map.put('V', 22);
+        map.put('W', 23);
+        map.put('X', 24);
+        map.put('Y', 25);
+        map.put('Z', 26);
+        if( length == 1){
+            result = map.get(c[0]);
+        }else{
+            result = map.get(c[0])*26 + map.get(c[1]);
+        }
+        return result;
+    }
+
+    /**
+     *Integers are base 10 numbers calculated as:
+     321 = 3 * (10^2) + 2 * (10^1) + 1 * (10^0)
+     An excel sheet column number(replace alphabets with corresponding number) is a base 26 number:
+     CBA = C * (26^2) + B * (26^1) + A * (26^0)
+     where C = 3, B = 2 & A = 1
+     */
+    public static int titleToNumber(String s) {
+        double sum = 0;
+        int len = s.length();
+        for(int i = len - 1;i > -1;i--){
+            sum += Math.pow(26, len - (i + 1)) * (s.charAt(i) - 'A' + 1) ;
+        }
+        return (int)sum;
+    }
+
+    public static void main(String[] args){
+        System.out.print(titleToNumber("AAA"));
+    }
+}
+
+package leetcode;
+
+import datastructure.LinkedList.LinkedList;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class HappyNumber {
+
+
+    /**
+     * # 202. find the happy number
+     *
+     *  if it's not a happy number, it must have a loop
+     *  16 is not a happy number,
+     *
+     * 1² + 6² => 1 + 36 => 37
+     * 3² + 7² => 9 + 49 => 58
+     * 5² + 8² => 25 +64 => 89
+     * 8² + 9² => 64 + 81 => 145
+     * 1² + 4² + 5² => 1+16+25 => 42
+     * 4² + 2² => 16 +4 => 20
+     * 2² + 0² => 4 +0 => 4
+     * 4² => 16 (the cycle repeats again).
+     *
+     * Follow up: Happy Prime number
+     */
+
+    //Recursion wont work
+//    public boolean isHappy(int x){
+//        int sum = sumOfNumSquare(x);
+//        if( sum == 1){
+//            return true;
+//        }else{
+//            isHappy(sum);
+//        }
+//        return false;
+//    }
+
+    public boolean isHappyNumber(int n){
+        Set<Integer> set= new HashSet<>();
+        while(!set.contains(n)) {
+            if(n == 1)
+                return true;
+            set.add(n);
+            n = sumOfNumSquare(n);
+        }
+        return false;
+    }
+
+    private int sumOfNumSquare(int num){
+
+        int sum = 0;
+
+        // 232 => 2^2 + 3^2 + 2^2 = 17
+        // return sum = 17
+        while( num > 0 ){
+            int digit = num % 10;
+            sum = sum + digit * digit;
+            num = num/10;
+        }
+        return sum;
+    }
+
+    public boolean hasLoop(LinkedList list){
+        return true;
+    }
+}
+
+package leetcode;
+
+import java.util.*;
+
+public class IntersectionOfArrays {
+
+    /**
+     *  # 349. Intersection of Two Arrays
+     *  Given two arrays, write a function to compute their intersection.
+     Example:
+     Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return [2].
+     Note:
+     Each element in the result must be unique.
+     The result can be in any order.
+     */
+//    public int[] intersection2(int[] a, int[] b){
+//        Set<Integer> s = new HashSet<>();
+//        int[] longArray = a.length > b.length ? a : b;
+//        Map<Integer, Integer> countingMap = new HashMap<>();
+//        //return result;
+//
+//    }
+
+
+    /**
+     *  #350. Intersection of Two Arrays II
+     * 交集
+     *  Given two arrays, write a function to compute their intersection.
+     Example:
+     Given nums1 = [1, 2, 2, 1], nums2 = [2, 2], return [2, 2].
+     */
+
+    public static int[] intersection(int[] a, int[] b){
+
+        List<Integer> list = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i : a){
+            if( map.containsKey(i))
+                map.put(i, map.get(i)+1);
+            else map.put(i, 1);
+        }
+
+        for(int i: b){
+            if( map.containsKey(i)  && map.get(i)>0 ){
+                list.add(i);
+                map.put(i , map.get(i)-1);
+            }
+
+        }
+        int length = list.size();
+        int[] result = new int[length];
+        for(int i =0; i<length ;i++){
+            result[i] = list.get(i);
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] a = {1, 2, 3, 3,1};
+        int[] b = {1,3};
+
+        int[] result = (intersection(a, b));
+        for(int i: result){
+            System.out.print(i + ",");
+        }
+    }
+}
+
+package leetcode;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class MajorityElement {
+    /**
+     * #169. Majority Element
+     *
+     * Given an array of size n, find the majority element.
+     * The majority element is the element that appears more than ⌊ n/2 ⌋ times.
+       You may assume that the array is non-empty and the majority element always exist in the array.
+     */
+
+    // quick sort O(nlogn)
+    public int theMajority(int[] nums){
+        if(nums.length == 1){
+            return nums[0];
+        }
+        Arrays.sort(nums);
+        return nums[nums.length/2];
+    }
+
+
+    // O(n)
+    public static int theElement(int[] nums){
+        int count =0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int n: nums){
+            if(map.containsKey(n)){
+                map.put(n, map.get(n)+1);
+            }
+            else map.put(n, 1);
+        }
+        for (int i : map.values()){
+            if( i > nums.length/2){
+                count = i;
+            }
+        }
+        return getKeyFromValue(map, count);
+    }
+
+    public static String theElement(String[] strs){
+        int count = 0;
+        Map<String, Integer> map = new HashMap<>();
+        for(String str:strs){
+            if( map.containsKey(str)){
+                map.put(str, map.get(str)+1);
+            }else
+                map.put(str, 1);
+        }
+        for(int i: map.values()){
+            if(i > strs.length/2){
+                count = i;
+            }
+        }
+        return getKeyFromValueStr(map, count);
+    }
+
+    public static int theElement(char[] chars){
+        return 0;
+    }
+
+    private static int getKeyFromValue(Map<Integer, Integer> m, int count){
+        int result =0;
+        for(int i : m.keySet()){
+            if(m.get(i).equals(count)){
+                result = i;
+            }
+        }
+        return result;
+    }
+    private static String getKeyFromValueStr(Map<String, Integer> m, int count){
+        String result = null;
+        for(String s : m.keySet()){
+            if(m.get(s).equals(count)){
+                result = s;
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args){
+        int[] nums = {1,3,3,4,4,3,3,4,4,4,4};
+        String[] strList = {"today", "today", "yesterday"};
+        System.out.println(theElement(strList));
+    }
+}
+
+package leetcode;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class MoveZeros {
+
+    /**
+     * #283. Move Zeroes
+     * Given an array nums, write a function to move all 0's to the end of it
+     * while maintaining the relative order of the non-zero elements.
+     Example:
+     Input: [0,1,0,3,12]
+     Output: [1,3,12,0,0]
+     */
+    public static int[] moveZeros(int[] nums){
+        LinkedList<Integer> list = new LinkedList<>();
+        for(int i : nums){
+            if( i != 0 )
+                list.add(i);
+        }
+        for(int i : nums){
+            if( i == 0)
+                list.add(i);
+        }
+        return list.stream().mapToInt(i->i).toArray();
+    }
+
+    public int[] moveElements2(int[] nums){
+        List<Integer> result = new ArrayList<Integer>();
+        for(int i : nums){
+            if ( i != 0 ){
+                result.add(i);
+            }
+        }
+        int temp = nums.length - result.size();
+        for(int i=0; i< temp; i++){
+            result.add(0);
+        }
+        return result.stream().mapToInt(i->i).toArray();
+    }
+
+    public static void main(String[] args){
+        int[] nums = {1,0,3,0,5};
+        int[] resolved = moveZeros(nums);
+        for(int i:resolved){
+            System.out.print(i + ",");
+        }
+    }
+}
+
+package leetcode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class OperateStrings {
+
+    /**
+     * Given a string in the form of "AAABBBCCD"
+     * compress it to become "A3B3C3D1"
+     *
+     * 1. Take care special cases
+     * 2. initialize
+     *      char[]
+     *      StringBuilder
+     *      HashMap
+     * 3. Loop for each member:
+     *      a. push a[i] into map
+     *      b. if a[i] is new to the map, add to value, value =1
+     *      c if a[i] exists, add to value, value+1
+     * 4. output the elements to a string
+     */
+    public String compressString(String s){
+
+        if (s == null){
+            return "error!";
+        }else if( s.length() == 1){
+            return s + "1";
+        }
+        char[] letters = s.toCharArray();
+        Map<Character, Integer> map = new HashMap();
+
+        for(char letter : letters){
+            if(map.containsKey(letter)){
+                int value = map.get(letter) + 1;
+                map.put(letter, value);
+            }else{
+                map.put(letter, 1);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<Character, Integer> entry : map.entrySet()){
+            sb.append(entry.getKey());
+            sb.append(entry.getValue());
+        }
+        return sb.toString();
+    }
+}
+
+package leetcode;
+import datastructure.ListNode;
+
+public class Palindrome {
+
+    /**
+     * # 125. Valid Palindrome
+     * Given a sb, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+     Note: For the purpose of this problem, we define empty sb as valid palindrome.
+     *
+     */
+    public boolean isPalindrome2(String s){
+
+        //in-place algorithm similar to reverse, O(N/2)
+
+        int start =0;
+        int end = s.length()-1;
+        while( start < end ){
+            while ( start<end && !Character.isLetterOrDigit(s.charAt(start))){
+                start++;
+            }
+            while( start<end && !Character.isLetterOrDigit(s.charAt(end))){
+                end--;
+            }
+            if( s.charAt(start) != s.charAt(end)){
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+
+    public static String longestPalindrome(String s){
+        int length = s.length();
+        int longest = 0;
+        String result = null;
+        for(int i=0; i<length-1; i++){
+            for(int j= i+1; j<length+1; j++){
+                //subString(start, end)
+                //start is inclusive
+                //but end is exclusive
+                String temp = s.substring(i,j);
+                if( isPalindrome(temp) && temp.length() > longest) {
+                    longest = temp.length();
+                    result = temp;
+                }
+            }
+        }
+        System.out.println( "longest palindrome sb is: " + result);
+        System.out.println(longest);
+        return  result;
+    }
+
+    public static boolean isPalindromeWJDK(String s){
+        //RegExp \w is used to find a word character
+        //RegExp \W is used to find a non-word character
+        //RegExp \s is used to find a whitespace character
+        boolean b;
+        String temp = s.replaceAll("\\W", " ").toLowerCase();
+        if (temp == null || temp.isEmpty() || temp.trim().length() <1){
+            b = true;
+        }else {
+            String reversed = new StringBuilder().append(temp).reverse().toString();
+            if( temp.equals(reversed)){
+                b = true;
+            } else{
+                b = false;
+            }
+        }
+        System.out.println(b);
+        return b;
+    }
+
+    public static boolean isPalindrome(String s){
+        boolean b = false;
+        String temp = s.replaceAll("\\W", " ").replaceAll("\\s", "").toLowerCase();
+        if (temp == null || temp.isEmpty() || temp.trim().length() <= 1)
+            b = true;
+        else{
+            char[] charlist = temp.toCharArray();
+            for(int i=0,j=charlist.length-1; i<=j ; i++, j--){
+                if(charlist[i] == charlist[j])
+                    b = true;
+                else{
+                    b = false;
+                    break;
+                }
+            }
+        }
+        System.out.println(b);
+        return b;
+    }
+    /**
+     * 234. Palindrome Linked List
+     * Given a singly linked list, determine if it is a palindrome.
+     * Follow up: Could you do it in O(n) time and O(1) space?
+     */
+    public static boolean isPalindromeLinkedList(ListNode node){
+        ListNode original = node;
+        ListNode reversed = reverse(original);
+        return isEqual(original, reversed);
+    }
+
+    public static ListNode reverse(ListNode head){
+
+        ListNode original = head;
+        ListNode reversed = null;
+
+        ListNode prev = null;
+        ListNode current = head;
+        ListNode next = null;
+
+        while (current != null) {
+            next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        reversed = prev;
+        printList("original: ", original);
+        printList("reversed: ", reversed);
+        System.out.println(" ");
+        return reversed;
+    }
+    public static boolean isEqual(ListNode a, ListNode b){
+        printList("list a: ", a);
+        printList("list b: ", b);
+        while( a!=null & b!=null){
+            if( a.value != b.value ){
+                return false;
+            }
+            a = a.next;
+            b = b.next;
+        }
+        return true;
+    }
+    public static void printList(String message, ListNode head){
+        System.out.println(message);
+        while( head != null){
+            System.out.print(head.value + " ");
+            head = head.next;
+        }
+        System.out.println(" ");
+    }
+
+    public boolean isPalindrome(int x){
+        if( x == reverseNumber(x)){
+            return true;
+        }
+        return false;
+    }
+
+    // drawback: the rev can be overflowed
+    private int reverseNumber(int num){
+        int rev = 0;
+        while( num != 0){
+            rev = rev * 10 + num % 10;
+            num /= 10;
+        }
+        return rev;
+    }
+}
+
+package leetcode;
+
+public class PrimeNumbers implements in1 {
+
+    /**
+     * Output:
+     Print total number of prime numbers between 2 and the given number ( including them ).
+     */
+    @Override
+    public void primeNumbers(int p) {
+        int counter = 0;
+        for(int i=1; i <= p ; i++ ){
+            if ( isPrime(i) ) {
+                System.out.print(i + " ");
+                counter++;
+            }
+        }
+        System.out.println("total of prime numbers for " + p + " is: " + counter);
+    }
+
+    private boolean isPrime(int num){
+        boolean result = true;
+        if( num == 1){
+            result = false;
+        }else if( num == 2){
+            result = true;
+        }else if( num%2 == 0){
+            result = false;
+        }else {
+            for(int i=3; i<num; i+=2){
+                if(num%i == 0){
+                    result = false;
+                }
+            }
+        }
+        return result;
+    }
+}
+
+package leetcode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Recursion {
+
+    public StringBuilder sb = new StringBuilder();
+    /**
+     * 273. Integer to English Words
+     *
+     * todo: fix the initial issue
+     *
+     */
+    public String numberToWords(int num){
+        String s = helper(num);
+        System.out.println(s);
+        sb.setLength(0);
+        return s;
+    }
+    private String helper(int num){
+        //StringBuilder sb = new StringBuilder();
+        String text = "";
+        Map<Integer, String> map = new HashMap();
+        map.put(90, "Ninety");
+        map.put(80, "Eighty");
+        map.put(70, "Seventy");
+        map.put(60, "Sixty");
+        map.put(50, "Fifty");
+        map.put(40, "Forty");
+        map.put(30, "Thirty");
+        map.put(20, "Twenty");
+        map.put(19, "Nineteen");
+        map.put(18, "Eighteen");
+        map.put(17, "Seventeen");
+        map.put(16, "Twenty");
+        map.put(15, "Fifteen");
+        map.put(14, "Fourteen");
+        map.put(13, "Thirteen");
+        map.put(12, "Twelve");
+        map.put(11, "Eleven");
+        map.put(10, "Ten");
+        map.put(9, "Nine");
+        map.put(8, "Eight");
+        map.put(7, "Seven");
+        map.put(6, "Six");
+        map.put(5, "Five");
+        map.put(4, "Four");
+        map.put(3, "Three");
+        map.put(2, "Two");
+        map.put(1, "One");
+
+        if( num>= 1000*1000*1000){
+            int r = num%(1000*1000*1000);
+            int result = (num-r)/(1000*1000*1000);
+            helper(result);
+            //sb.append(" Billion ");
+            text = text + " Billion ";
+            helper(r);
+        }
+        else if( num>=1000*1000){
+            int r = num%(1000*1000);
+            int result = (num-r)/(1000*1000);
+            helper(result);
+            sb.append(" Million ");
+            helper(r);
+        }
+        else if( num>=1000){
+            int r = num%1000;
+            int result = (num-r)/1000;
+            helper(result);
+            sb.append(" Thousand ");
+            helper(r);
+        }
+        else if( num>=100){
+            int r = num%100;
+            text = map.get((num-r)/100);
+            sb.append(text + " Hundred ");
+            helper(r);
+        }
+        else if( num>=20){
+            int r = num%10;
+            text = map.get((num-r));
+            sb.append(text + " ");
+            helper(r);
+        }
+        else if( num>=10){
+            text = map.get(num);
+            sb.append(text + " ");
+        }
+        else if( num>0){
+            text = map.get(num);
+            sb.append(text + " ");
+        }
+        return sb.toString().trim();
+    }
+
+    /**
+     * Array
+     */
+    private final String[] belowTen = new String[] {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+    private final String[] belowTwenty = new String[] {"Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    private final String[] belowHundred = new String[] {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+
+    public String numberToWords2(int num) {
+        if (num == 0) return "Zero";
+        return helper2(num);
+    }
+
+    private String helper2(int num) {
+        String result;
+        if (num < 10) result = belowTen[num];
+        else if (num < 20) result = belowTwenty[num -10];
+        else if (num < 100) result = belowHundred[num/10] + " " + helper2(num % 10);
+        else if (num < 1000) result = helper2(num/100) + " Hundred " +  helper2(num % 100);
+        else if (num < 1000000) result = helper2(num/1000) + " Thousand " +  helper2(num % 1000);
+        else if (num < 1000000000) result = helper2(num/1000000) + " Million " +  helper2(num % 1000000);
+        else result = helper2(num/1000000000) + " Billion " + helper2(num % 1000000000);
+        return result.trim();
+    }
+
+
+    /**
+     * #70. Climbing Stairs
+     *
+     * You are climbing a stair case. It takes n steps to reach to the top.
+     Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+     Note: Given n will be a positive integer.
+     Example 1:
+     Input: 2
+     Output: 2
+     Explanation: There are two ways to climb to the top.
+     1. 1 step + 1 step
+     2. 2 steps
+     *
+     */
+    public static int ClimbingStairs(int steps){
+        //at least one way which is 1,1
+        int result = 1;
+        if (steps==1)
+            return result;
+        int i = 1;
+        int j = 2;
+        if(steps%j == 0){
+            result++;
+        }
+        return result;
+    }
+
+    /**
+     *  #202. Happy Number
+     *  Write an algorithm to determine if a number is "happy".
+     *  Example:
+     Input: 19
+     Output: true
+     Explanation:
+     12 + 92 = 82
+     82 + 22 = 68
+     62 + 82 = 100
+     12 + 02 + 02 = 1
+     */
+
+}
+
+package leetcode;
+
+import java.util.Random;
+
+public class ReservoirSampling {
+
+    public int[] ramdonNumbers(int[] numbers, int k){
+        int[] reservoir = new int[k];
+        Random random = new Random();
+        for(int i=0; i<reservoir.length; i++){
+            reservoir[i] = numbers[k];
+        }
+        //The i-th item is chosen to be included in the reservoir with probability k/i
+        for(int i=k+1; i<numbers.length; i++){
+            int j = random.nextInt(i)+1;
+            if( j<k ) reservoir[j] = numbers[i];
+        }
+        return reservoir;
+    }
+}
+
+package leetcode;
+import common.Util;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Reverse{
+    /**
+     * Leet code : #344. Reverse String
+     * Write a function that takes a sb as input and returns the sb reversed.
+     *
+     * The point:
+     * 1. start from (length -1)
+     * 2. char array and sb conversion
+     */
+    public static String reverseStringToList(String input){
+        char[] chars = input.toCharArray();
+        int len = chars.length;
+        char[] reversed = new char[chars.length];
+        for(int i= len-1; i>=0; i--){
+            reversed[len-1-i] = chars[i];
+        }
+        return new String(reversed);
+    }
+
+    public static String reverseStringWJKD(String input){
+        return new StringBuilder().append(input).reverse().toString();
+    }
+
+    /**
+     * # 7. Reverse Integer
+     * Given a 32-bit signed integer, reverse digits of an integer.
+     * Example 1:
+     Input: 123
+     Output: 321
+
+     Note:
+     Assume we are dealing with an environment which could only store integers within
+     the 32-bit signed integer range: [−231,  231 − 1]. For the purpose of this problem,
+     assume that your function returns 0 when the reversed integer overflows.
+     */
+    public static int reverseIntWJDK(int num){
+        String reversed = new StringBuilder().append(Math.abs(num)).reverse().toString();
+        return (num < 0) ? (Integer.parseInt(reversed) * -1) : Integer.parseInt(reversed);
+    }
+
+    public static int reverseInt(int x){
+        int rev = 0;
+        while (x != 0) {
+            // Pop the last number
+            int pop = x % 10;
+            x /= 10;
+            // max 2147483647;
+            // min -2147483648
+            if (rev > Integer.MAX_VALUE/10 || (rev == Integer.MAX_VALUE / 10 && pop > 7)) return 0;
+            if (rev < Integer.MIN_VALUE/10 || (rev == Integer.MIN_VALUE / 10 && pop < -8)) return 0;
+            rev = rev * 10 + pop;
+        }
+        return rev;
+    }
+
+    //in-place solution O(N), no extra memory
+    public static int[] reverseArrays(int[] nums){
+        int start =0;
+        int end = nums.length-1;
+        if( end == 0 ){
+            return nums;
+        }
+        while( start<end ){
+            Util.swap(nums, start, end);
+        }
+        return nums;
+    }
+
+    //in-place, O(n/2)
+    public static void reverseWords(String string){
+        String[] strs = string.trim().split(" ");
+        int i =0;
+        int j = strs.length -1;
+        String temp;
+        while( i <= j){
+            temp = strs[j];
+            strs[j] = strs[i];
+            strs[i] = temp;
+            i++;
+            j--;
+        }
+        for(String s : strs){
+            System.out.print(s + " ");
+        }
+
+    }
+
+    public static void main(String[] args){
+        reverseWords("tall is Gavin");
+    }
+}
+
+package leetcode;
+
+import java.util.*;
+
+public class SingleElement {
+
+    /**
+     * leetcode #136. Single Number
+     *
+     * Given a non-empty array of integers, every element appears twice except for one. Find that single one.
+     Note:
+     Your algorithm should have a linear runtime complexity.
+     Could you implement it without using extra memory?
+     Example 1:
+     Input: [2,2,1]
+     Output: 1
+     Example 2:
+     Input: [4,1,2,1,2]
+     Output: 4
+     */
+
+    /**
+     * first , we have to know the bitwise XOR in java
+     0 ^ N = N
+     N ^ N = 0
+     So..... if N is the single number
+     N1 ^ N1 ^ N2 ^ N2 ^..............^ Nx ^ Nx ^ N
+     = (N1^N1) ^ (N2^N2) ^..............^ (Nx^Nx) ^ N
+     = 0 ^ 0 ^ ..........^ 0 ^ N
+     = N
+     */
+    public static int theNumber(int[] nums){
+        int result = 0;
+        for(int num : nums){
+            result = result ^ num;
+        }
+        return result;
+    }
+
+    public static int theElement(int[] nums){
+        Map<Integer, Integer> map = new HashMap<>();
+        //<value, count>
+        for(int n : nums){
+            if( map.containsKey(n)){
+                map.put(n, map.get(n)+1);
+            }
+            else map.put(n, 1);
+        }
+        return getKeyFromValue(map, 1);
+    }
+
+    public static int[] theElements(int[] nums){
+
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int n : nums){
+            if( map.containsKey(n)){
+                map.put(n, map.get(n)+1);
+            }
+            else map.put(n, 1);
+        }
+        List<Integer> al = getKeysFromValue(map, 1);
+        int[] result = new int[al.size()];
+        for(int i=0; i<al.size(); i++){
+            result[i] = al.get(i);
+        }
+        return result;
+    }
+
+    private static int getKeyFromValue(Map<Integer, Integer> m, int count){
+        int result=0;
+        for( int i : m.keySet()){
+            if(m.get(i).equals(count)){
+                result = i;
+            }
+        }
+        return result;
+    }
+
+    private static List<Integer> getKeysFromValue(Map<Integer, Integer> m, int count){
+        List<Integer> list = new ArrayList<>();
+        for( int i : m.keySet()){
+            if(m.get(i).equals(count)){
+                list.add(i);
+            }
+        }
+        return list;
+    }
+
+    private static List<Character> getKeysFromValueChar(Map<Character, Integer> map, int count){
+        List<Character> result = new ArrayList<>();
+        for(char c : map.keySet()){
+            if(map.get(c).equals(count)){
+                result.add(c);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * #387. First Unique Character in a String
+     *
+     * Given a sb, find the first non-repeating character in it and return it's index. If it doesn't exist, return -1.
+     * Examples:
+     s = "leetcode"
+     return 0.
+     s = "loveleetcode",
+     return 2.
+     */
+     public static int theFirstUniqElement(String s){
+         Map<Character, Integer> map = new LinkedHashMap<>();
+         Set<Character> set = new HashSet<>(); //
+         for (int i = 0; i < s.length(); i++) {
+             if (set.contains(s.charAt(i))) {
+                 if (map.get(s.charAt(i)) != null) {
+                     map.remove(s.charAt(i));
+                 }
+             } else {
+                 // value = index
+                 map.put(s.charAt(i), i);
+                 set.add(s.charAt(i));
+             }
+         }
+         // is "map.size() == 0" true?
+         // yes - return -1
+         // no - return the first element of the map
+         return map.size() == 0 ? -1 : map.entrySet().iterator().next().getValue();
+     }
+
+     public int theDuplicateElement(String str){
+         Map<Character, Integer> map = new HashMap<>();
+         for( int i=0; i<str.length(); i++ ){
+             char temp = str.charAt(i);
+             if( map.containsKey(temp)){
+                 return map.get(temp);
+             }else{
+                 map.put(temp, i);
+             }
+         }
+         return -1;
+     }
+
+    /**
+     * 287. Find the Duplicate Number
+     *
+     * Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive),
+     * prove that at least one duplicate number must exist.
+     * Assume that there is only one duplicate number, find the duplicate one.
+     * Example 1:
+     Input: [1,3,4,2,2]
+     Output: 2
+     *
+     * Note:
+     You must not modify the array (assume the array is read only).
+     You must use only constant, O(1) extra space.
+     Your runtime complexity should be less than O(N).
+     There is only one duplicate number in the array, but it could be repeated more than once.
+     */
+    public static int findTheDup(int[] nums){
+        int dup = -1;
+        Set<Integer> set = new HashSet<>();
+        for(int n : nums){
+            if( set.contains(n)){
+                dup = n;
+            }
+            else set.add(n);
+        }
+        return dup;
+    }
+
+    public static int[] removeDuplicates(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for(int n:nums){
+            set.add(n);
+        }
+        int[] result = new int[set.size()];
+        int i = 0;
+        for(Integer val : set){
+            result[i++] = val;
+        }
+        return result;
+    }
+
+    /**
+     * # 215. Kth Largest Element in an Array
+     *
+     * Find the kth largest element in an unsorted array.
+     * Example 1:
+     Input: [3,2,1,5,6,4] and k = 2
+     Output: 5
+     */
+    //O(nlogn)
+    public static int findKthLargest(int[] nums, int k){
+        int l = nums.length;
+        if( k > l|| k ==0 ){
+            throw new IllegalArgumentException();
+        }else{
+            Arrays.sort(nums);
+        }
+        return nums[l-k];
+    }
+
+    /**
+     *  # 268. Missing Number
+     *  Given an array containing n distinct numbers taken from 0, 1, 2, ..., n,
+     *  find the one that is missing from the array.
+     Example 1:
+     Input: [3,0,1]
+     Output: 2
+     */
+    public static int findMissingNum(int[] nums){
+        int result = -1;
+        Arrays.sort(nums);
+        for(int i=0; i<nums.length; i++){
+            if( (nums[i+1] - nums[i]) > 1)
+                result = nums[i] + 1;
+            if(result != -1)
+                break;
+        }
+        return result;
+    }
+
+    /**
+     * Missing numbers from 2 arrays
+     *  a1[n]:
+     *  a2[n]: shuffle a1, and delete elements randomly
+     *  find the missing number
+     *
+     *  algorithm:
+     *  1. take care of the edge cases
+     *  2. sort the arrays
+     *  3. Loop each element for a1[] and a2[]
+     *      a. compare a1[n] and a2[m]
+     *      b. if the last element got deleted (a1.size > a2.size)
+     *          return a[n]
+     *      c. if (a[n] != a[m])
+     *          return a[n]
+     */
+    public static int findMissingNumFrom2Arrays(int[] nums, int[] nums2){
+
+        int size1 = nums.length;
+        int size2 = nums2.length;
+        if( size1 <= size2){
+            return 0;
+        }
+
+        int result = 0;
+        Arrays.sort(nums);
+        Arrays.sort(nums2);
+//        for(int i=0; i< size1 ; i++){
+//            for(int j=0; j < size2; j++){
+//                if ( nums[i] != nums2[j] || i>j){
+//                   result = nums[i];
+//                }
+//            }
+//        }
+
+        return result;
+    }
+
+    //O(n)
+    //if sort(), O(nlogn)
+    public int the3LargestNumber(int[] nums){
+        if (nums.length == 0) {
+            return 0;
+        }
+        int firstMax = Integer.MIN_VALUE;
+        int secondMax = Integer.MIN_VALUE;
+        int thirdMax = Integer.MIN_VALUE;
+        for (int num : nums) {
+            if (num > firstMax) {
+                thirdMax = secondMax;
+                secondMax = firstMax;
+                firstMax = num;
+            } else if (num > secondMax && num < firstMax) {
+                thirdMax = secondMax;
+                secondMax = num;
+            } else if (num > thirdMax && num < firstMax && num < secondMax) {
+                thirdMax = num;
+            }
+        }
+        return thirdMax == Long.MIN_VALUE ? firstMax : thirdMax;
+    }
+
+    public int findThe2LargestNumber(int[] nums){
+
+        return 0;
+    }
+
+    // leetcode #202
+    public boolean isHappyNumber(int x){
+
+        return false;
+    }
+
+    public static void main(String[] args){
+        int[] nums = {1,2,3,4,5};
+        int[] nums2 = {1,4,5,2};
+        //System.out.println(findMissingNum(nums));
+        System.out.println(findMissingNumFrom2Arrays(nums, nums2));
+    }
+}
+
+package leetcode;
+
+import datastructure.ListNode;
+
+public class SingleLinkedListQuestions {
+
+    /**
+     * #206. Reverse Linked List
+     */
+    public static ListNode reverseList(ListNode head){
+        ListNode prev = null;
+        ListNode current = head;
+        while( current != null){
+            //current node's next point to somewhere else
+            ListNode temp = current.next;
+            //previous one becomes the next
+            current.next = prev;
+            //current one becomes the previous
+            prev = current;
+            //the original next become current
+            current = temp;
+        }
+        return prev;
+    }
+
+    public static ListNode reverseList2(ListNode head){
+        return  head;
+    }
+
+    /**
+     * # 237. Delete Node in a Linked List
+     *
+     * The linked list will have at least two elements.
+     All of the nodes' values will be unique.
+     The given node will not be the tail and it will always be a valid node of the linked list.
+     Do not return anything from your function.
+     */
+    public static void deleteNode(ListNode head){
+
+
+    }
+
+
+    public static void printList(ListNode node){
+        while( node != null){
+            //todo: fix getValue
+            //System.out.print(node.getValue() + " ");
+            node = node.next;
+        }
+    }
+
+    public static void main(String[] args){
+
+        ListNode list = new ListNode(1);
+        list.next = new ListNode(2);
+        list.next.next = new ListNode(3);
+
+        printList(reverseList(list));
+
+    }
+}
+
+package leetcode;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+
+public class Sums {
+    ArrayList<Integer> list = new ArrayList<>();
+
+    Sums(){
+
+    }
+
+    public void add(int num){
+        list.add(num);
+        Collections.sort(list);
+    }
+
+    public boolean find(int sum){
+        for(Integer i : list){
+            if( list.contains(sum - i))
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Given an array of integers, positive and negative, write a program that can find
+     * the largest continuous sum
+     *
+     * algorithm: (Dynamic Program)
+     *
+     * 1. Take care special cases
+     *
+     * 2. initialize:
+     *  largestSum = a[0];
+     *  tempSum = a[0];
+     *
+     * 3. Loop for each element:
+     *      a. tempSum = tempSum + a[i]
+     *      b. if tempSum > largestSum
+     *              largestSum = tempSum
+     *         return largestSum
+     */
+
+    public int largestSum(int[] numbers){
+        int end = numbers.length;
+        if(end == 0){
+            return 0;
+        }
+        if(end == 1){
+            return  numbers[0];
+        }
+        int largestSum = numbers[0];
+        int tempSum = numbers[0];
+        for(int i=1; i<end; i++){
+            System.out.println("loop " + i);
+
+            tempSum = Math.max(numbers[i], tempSum + numbers[i]);
+            System.out.println(" tempsum: " + tempSum);
+            largestSum = Math.max(tempSum, largestSum);
+            System.out.println(" largest sum: " + largestSum);
+        }
+        return  largestSum;
+    }
+
+    public String toString(){
+        String result = "";
+        for(int i : list){
+            result = result + String.valueOf(i) + ",";
+        }
+        return result;
+    }
+}
+
+package leetcode;
+
+public class testClass implements in1 {
+
+    /**
+     * Output:
+     Print total number of prime numbers between 2 and the given number ( including them ).
+     */
+    @Override
+    public void primeNumbers(int p) {
+        int counter = 0;
+        for(int i=1; i <= p ; i++ ){
+            if ( isPrime(i) ) {
+                System.out.println(i);
+                counter++;
+            }
+        }
+        System.out.println("total of prime numbers for " + p + " is: " + counter);
+    }
+
+    private boolean isPrime(int num){
+        boolean result = true;
+        if( num == 1){
+            result = false;
+        }else if( num == 2){
+            result = true;
+        }else if( num%2 == 0){
+            result = false;
+        }else {
+            for(int i=3; i<num; i+=2){
+                if(num%i == 0){
+                    result = false;
+                }
+            }
+        }
+        return result;
+    }
+}
+
+package leetcode;
+
+import search.BinarySearch;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class TwoNumbers {
+
+    /**
+     * Leet code #1
+     * Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+     You may assume that each input would have exactly one solution, and you may not use the same element twice.
+     */
+    // brute force: O(N^2) time, O(1) space
+    public int[] twoSum(int[] nums, int target) {
+        if( nums.length == 1 && nums[0] == target){
+            return new int[]{0};
+        }
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[j] == target - nums[i]) {
+                    return new int[] { i, j };
+                }
+            }
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+    //O(n) time, O(n)space
+    public int[] twoSumMap(int[] nums, int target){
+        if(nums.length==1 && nums[0] == target){
+            return new int[]{0};
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i=0; i<nums.length ; i++){
+            if(map.containsKey(target - nums[i])){
+                return new int[]{map.get(target - nums[i]), i};
+            }
+            else
+                map.put(nums[i], i);
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+    /**
+     * Leet code #167
+     * Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number.
+     The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2.
+     */
+    //O(n log n ) time, O(1) space
+    public int[] twoSumSortedBinarySearch(int[] nums, int target){
+        BinarySearch bs = new BinarySearch();
+        for(int i=0; i< nums.length; i++){
+            int value = target - nums[i];
+            int result = bs.iterativeBinarySearch(nums, i+1, nums.length, value);
+            return new int[]{result, i};
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+
+    //O(N) time, O(1) space
+    public int[] twoSumSorted(int[] nums, int target) {
+        int i = 0;
+        int j = nums.length-1;
+        while( i < j){
+            if((nums[i] + nums[j]) > target) {
+                j--;
+            }
+            else if( (nums[i] + nums[j]) < target){
+                i++;
+            }
+            else
+                return new int[] {i, j};
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+    /**
+     * Design and implement a Sums class. It should support the following operations: add and find
+     * add(input) Add the number input to an internal data structure
+     * find(value) Find if there exists any pair of numbers which sum is equal to the value
+     */
+
+
+}
+
+package leetcode;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+
+public class TwoSum {
+    ArrayList<Integer> list = new ArrayList<>();
+
+    TwoSum(){
+
+    }
+
+    public void add(int num){
+        list.add(num);
+        Collections.sort(list);
+    }
+
+    public boolean find(int sum){
+        for(Integer i : list){
+            if( list.contains(sum - i))
+                return true;
+        }
+        return false;
+    }
+
+    public String toString(){
+        String result = "";
+        for(int i : list){
+            result = result + String.valueOf(i) + ",";
+        }
+        return result;
+    }
+}
+
+package leetcode;
+
+import java.util.LinkedList;
+public class TwoSumSorted {
+
+    LinkedList<Integer> list = new LinkedList();
+
+    //add to be a sorted list
+    public void add(int num){
+        if( list.isEmpty())
+            list.add(num);
+        else if( num < list.get(0)){
+            list.addFirst(num);
+        }else if( num > list.getLast()){
+            list.addLast(num);
+        }
+    }
+}

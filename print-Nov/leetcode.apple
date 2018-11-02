@@ -1,0 +1,452 @@
+package leetcode.Apple;
+public class LongestCommonPrefix {
+    /**
+     * # 14. Write a function to find the longest common prefix string amongst an array of strings.     *
+     * If there is no common prefix, return an empty string "".
+     *
+     * Example 1:     *
+     * Input: ["flower","flow","flight"]
+     * Output: "fl"
+     *
+     * Example 2:     *
+     * Input: ["dog","racecar","car"]
+     * Output: ""
+     * Explanation: There is no common prefix among the input strings.
+     */
+    public String getPrefix(String[] strings){
+        String templatePrefix = commonPrefix(strings[0], strings[1]);
+        String result = null;
+        for(int i=2; i<strings.length; i++){
+            result = commonPrefix(templatePrefix, strings[i]);
+        }
+        return result;
+    }
+
+    private String commonPrefix(String s1, String s2){
+        if( s1.equals(s2)){
+            return s1;
+        }
+        int length;
+        String shortStr;
+        if( s1.length() < s2.length()){
+            length = s1.length();
+            shortStr = s1;
+        }else {
+            length = s2.length();
+            shortStr = s2;
+        }
+
+        for( int i=0; i< length; i++){
+            if( s1.charAt(i) != s2.charAt(i) ){
+                return s1.substring(0, i-1);
+            }
+        }
+        return shortStr;
+    }
+}
+
+package leetcode.Apple;
+
+public class MaxSuarray {
+    /**
+     * #53 Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
+     *
+     * Example:
+     *
+     * Input: [-2,1,-3,4,-1,2,1,-5,4],
+     * Output: 6
+     * Explanation: [4,-1,2,1] has the largest sum = 6.
+     *
+     */
+    public int findMaxSum(int[] nums){
+        if( nums.length == 1){
+            return nums[0];
+        }
+        int max = nums[0];
+        int maxCurrent = nums[0];
+        for( int i=1; i<nums.length; i++ ){
+            maxCurrent = Math.max(maxCurrent + nums[i], maxCurrent);
+            max = Math.max(maxCurrent,max);
+        }
+        return max;
+    }
+
+    public int findMaxProduct(int[] nums){
+        return 0;
+    }
+
+    public int findBestTimeToSellStock(int[] nums){
+        int maxProfit = 0;
+        int minBuy = nums[0];
+        for( int i =0; i<nums.length; i++ ){
+            minBuy = Math.min(minBuy, nums[i]);
+            int profit = nums[i] - minBuy;
+            maxProfit = Math.max(maxProfit, profit);
+        }
+        return maxProfit;
+    }
+
+    public int degreeOfArray(int[] nums){
+        return 0;
+    }
+}
+
+package leetcode.Apple;
+
+public class PivotIndex {
+
+    //724. Find pivot index
+    /**
+     * Example 1:
+     * Input:
+     * nums = [1, 7, 3, 6, 5, 6]
+     * Output: 3
+     * Explanation:
+     * The sum of the numbers to the left of index 3 (nums[3] = 6) is equal to the sum of numbers to the right of index 3.
+     * Also, 3 is the first index where this occurs.
+     *
+     */
+    public int pivotIndex(int[] nums){
+        // right = sum - left - pivot
+        // pivot = sum - (left + right)
+        if( nums.length == 1){
+            return -1;
+        }
+        int sum = 0;
+        int leftSum = 0;
+        for( int num : nums){
+            sum += num;
+        }
+        for(int i=0; i<nums.length; i++){
+            if( nums[i] == sum - leftSum * 2){
+                return i;
+            }
+            leftSum += nums[i];
+        }
+        return -1;
+    }
+}
+
+package leetcode.Apple;
+
+public class RemoveConsecutive {
+
+    public String removeCon(String str){
+
+        int len = str.length();
+        if( len == 1){
+            return str;
+        }
+        str = lowCaseLetterOnly(str);
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<len; i++){
+
+            // Consider corner cases first
+            if( i == 0 ){
+                if( str.charAt(i) != str.charAt(i+1)){
+                    sb.append(str.charAt(i));
+                }
+            }
+            else if( i == len-1 ){
+                if( str.charAt(i) != str.charAt(i-1) ){
+                    sb.append(str.charAt(i));
+                }
+            }
+            else if( str.charAt(i) != str.charAt(i+1) && str.charAt(i) != str.charAt(i-1)){
+                sb.append(str.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+
+    private String lowCaseLetterOnly(String str){
+        char[] chars = new char[str.length()];
+        int j=0;
+        for( int i=0; i< chars.length; i++){
+            if( Character.isLetter(str.charAt(i))){
+                chars[j] = str.charAt(i);
+                j++;
+            }
+        }
+        String result = String.copyValueOf(chars).toLowerCase();
+        System.out.println("String with letters only: " + result);
+        return result;
+    }
+}
+
+package leetcode.Apple;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class TwoSum {
+
+    //#1. Find 2 numbers that add up to a target, return a list of their index
+    // Time: O(N), Space O(N)
+
+    public int[] twoSum1(int[] nums, int target){
+        //value: value => value: index
+        Map<Integer, Integer> m = new HashMap();
+
+        for(int i =0; i<nums.length; i++){
+            int x = target - nums[i];
+            if( m.containsKey(x)){
+                return new int[] {i, m.get(x)};
+            }
+            else
+                m.put(nums[i], i);
+        }
+        throw new IllegalArgumentException("can't find!");
+    }
+
+    //# The array int[] nums is already sorted
+    // For sorted array, binary search, O(N), O(logn)
+    public int[] twoSumInSorted1(int[] nums, int target){
+        for(int i=0; i<nums.length; i++){
+            int key = target - nums[i];
+            int index = binarySearch(nums, key, 0, nums.length-1);
+            if( index != -1) {
+                return new int[] {index, i};
+            }
+        }
+        throw  new IllegalArgumentException("cant find!");
+    }
+
+    private int binarySearch(int[] nums, int key, int start, int end){
+        int mid = ( start + end )/2;
+        if( key == mid) return mid;
+        if( key < nums[mid]){
+            return binarySearch(nums, key, start, mid);
+        }else if( key > nums[mid]){
+            return binarySearch(nums, key, mid+1, end);
+        }
+        return -1;
+    }
+
+    // In-place solution
+    // Time O(N/2),
+    public int[] twoSumInSorted2(int[] nums, int target){
+        int i=0, j = nums.length-1;
+        while( i < j){
+            int sum = nums[i] + nums[j];
+            if( sum == target){
+                return new int[] {i, j};
+            }
+            if( sum < target){
+                i++;
+            }else{
+                j--;
+            }
+        }
+        throw new IllegalArgumentException("cant find!");
+    }
+
+    public int[] threeSum(int[] nums, int target){
+        return new int[] {0,1};
+    }
+}
+
+package leetcode.Apple;
+
+import common.Util;
+import java.util.Arrays;
+
+public class ValidString {
+
+    public boolean isPalindrome(String s){
+        int len = s.length();
+        if( len == 1){
+            return true;
+        }
+        s = Util.lowCaseLetterOnly(s);
+        StringBuilder sb = new StringBuilder();
+        String reverse = sb.append(s).reverse().toString();
+        return reverse.equals(s);
+    }
+
+    public boolean isAnagram(String s){
+        int len = s.length();
+        if( len == 1){
+            return true;
+        }
+        s = Util.lowCaseLetterOnly(s);
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        return s.equals(String.valueOf(chars));
+    }
+}
+
+package leetcode.Apple;
+
+import java.util.Random;
+
+public class Cards {
+
+    private int[] cards;
+    private int[] copyOfCards;
+    private int totalCards;
+
+    public Cards(int totalCards){
+        this.totalCards = totalCards;
+        this.cards = new int[totalCards];
+        for(int i =0; i<totalCards; i++){
+            cards[i] = i+1;
+        }
+        this.copyOfCards = cards;
+    }
+
+    //O(n)
+    public int[] shuffledCards(){
+
+        for(int i =0; i<totalCards; i++){
+            int index = generateRandom(i,totalCards);
+            System.out.println("x: " + i + "y: " + index);
+            if( i == index){
+                continue;
+            }
+            swap(cards[i], cards[index]);
+        }
+        return cards;
+    }
+
+    public int[] resetCardOrders(){
+        return copyOfCards;
+    }
+
+    public void printCards(int[] input){
+        System.out.println("Cards");
+        for(int n : input){
+            System.out.print( n + "," );
+        }
+    }
+
+    public void printOriginalCards(){
+        System.out.println("original cards");
+        for(int n : copyOfCards){
+            System.out.print( n + "," );
+        }
+    }
+
+    private int generateRandom(int min, int max){
+        Random r = new Random();
+        return r.nextInt(max - min) + min;
+    }
+
+    private void swap(int x, int y){
+        if( x==y ){
+            return;
+        }
+        int temp;
+        temp = cards[x];
+        cards[x] = cards[y];
+        cards[y] = temp;
+    }
+}
+
+package leetcode.Apple;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+public class FirstUniqueChar {
+
+    // #387 find the first unique letter and return index
+    //O(n^2)
+    public int firstUnique(String s){
+        char[] chars = s.toCharArray();
+        for(int i=0; i<s.length()-1; i++){
+            for(int j=1; j<s.length();j++){
+                if( chars[i] != chars[j]){
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    //O(n^2)
+    public int firstUnique2(String s){
+        for(int i=0; i<s.length(); i++){
+            if(s.indexOf(s.charAt(i)) != s.lastIndexOf(s.charAt(i))){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    //O(n)
+    //Since order matters, so use LinkedList
+    public int firstUnique3(String s){
+        int len =s.length();
+        if( len == 1){
+            return 0;
+        }
+        List counter = new LinkedList(); //for index
+        Map<Character, Integer> map = new HashMap<>();
+        for(int i=0; i< len; i++){
+            char current = s.charAt(i);
+            if( !map.containsKey(current)){
+                map.put(current, i);
+                counter.add(i);
+            }else{
+                counter.remove(map.get(current));
+            }
+        }
+        return  counter.isEmpty() ? -1 : (int)counter.get(0);
+    }
+}
+
+package leetcode.Apple;
+
+public class LinkedListQ {
+
+    static class ListNode{
+        ListNode next;
+        int val;
+        ListNode(int x){
+            val = x;
+        }
+    }
+
+    /**
+     * While you are traversing the list, change the current node's next pointer to point to its previous element.
+     * Since a node does not have reference to its previous node,
+     * you must store its previous element beforehand.
+     * You also need another pointer to store the next node before changing the reference.
+     * Do not forget to return the new head reference at the end!
+     */
+    public ListNode reverseList(ListNode head){
+
+        ListNode previous = null;
+        ListNode current = head;
+        ListNode next;
+
+        // O(n) O(n)
+        //How to remember this? start from next then back to next
+        while( current != null){
+            next = current.next;
+            current.next = previous; //reverse statement
+            previous = current;
+            current = next;
+        }
+        return previous;
+    }
+
+    // don't understand
+    public ListNode reverseList2(ListNode head){
+        if (head == null || head.next == null) return head;
+        ListNode p = reverseList2(head.next);
+        head.next.next = head;
+        head.next = null;
+        return p;
+    }
+
+    public void deleteNode(ListNode node){
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+
+}
+
